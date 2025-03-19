@@ -1,10 +1,10 @@
 #!/bin/bash
 PSQL="psql -X --username=freecodecamp --dbname=number_guess --no-align -t -c"
-NUMBER_TO_GUESS=$(($RANDOM%2))
+NUMBER_TO_GUESS=$(($RANDOM%5))
 # echo "$NUMBER_TO_GUESS"
 
 echo -e "Enter your username:"
-read USERNAME
+read username
 
 # if the username is less or more than 22 characters
 if [[ ! $USERNAME =~ [A-Za-z0-9]{22}$ ]]
@@ -36,12 +36,31 @@ else
   
   # start the game
   GUESSES=0
-  GUESSED_NUMBER=0
+  GUESSED_NUMBER=-90
   while [[ $GUESSED_NUMBER != $NUMBER_TO_GUESS ]]
   do
-      echo -e "Guess the secret number between 1 and 2:"
+      echo -e "Guess the secret number between 1 and 5:"
       read GUESSED_NUMBER
+
+      # if the input is not an integer
+      if [[ ! $GUESSED_NUMBER =~ ^[0-9]+$ ]]
+      then
+          echo -e "That is not an integer, guess again:"
+      else
+          # lower guess
+          if [[ $GUESSED_NUMBER -lt $NUMBER_TO_GUESS ]]
+          then
+              echo -e "It's higher than that, guess again:"
+          elif [[ $GUESSED_NUMBER -gt $NUMBER_TO_GUESS ]]
+          then
+              echo -e "It's lower than that, guess again:"
+          fi
+      fi
       GUESSES=$(( $GUESSES + 1 ))
   done
+  # successful guess
+  echo -e "You guessed it in $GUESSES tries. The secret number was $NUMBER_TO_GUESS. Nice job!"
+
+  # update the user row in the database.
  
 fi
