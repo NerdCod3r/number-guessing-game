@@ -1,6 +1,6 @@
 #!/bin/bash
 PSQL="psql -X --username=freecodecamp --dbname=number_guess --no-align -t -c"
-NUMBER_TO_GUESS=$(($RANDOM%1001))
+NUMBER_TO_GUESS=$(($RANDOM%2))
 # echo "$NUMBER_TO_GUESS"
 
 echo -e "Enter your username:"
@@ -39,9 +39,9 @@ else
   GUESSED_NUMBER=0
   while [[ $GUESSED_NUMBER != $NUMBER_TO_GUESS ]]
   do
-      echo -e "Guess the secret number between 1 and 1000:"
+      echo -e "Guess the secret number between 1 and 2:"
       read GUESSED_NUMBER
-      (( $GUESSES = $GUESSES + 1 ))
-      echo "Guess #$GUESSES"
+      GUESSES=$(( $GUESSES + 1 ))
   done
+ 
 fi
