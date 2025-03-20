@@ -20,19 +20,19 @@ else
       INSERT_USER_RESULT=$($PSQL "INSERT INTO users(username) VALUES('$username')")
       if [[ $INSERT_USER_RESULT == 'INSERT 0 1' ]]
       then
-          echo -e "Welcome $username! It looks like this is your first time here."
+          echo -e "Welcome, $username! It looks like this is your first time here."
       fi
   # if the user exists
   else
       # print some info to the user
       echo "$CHECK_USER" | while IFS="|" read USER_ID username games_played best_game
       do
-        echo -e "Welcome back, $username! You have played $games_played games, and your best game took $best_game guesses."
+        echo "Welcome back, $username! You have played $games_played games, and your best game took $best_game guesses."
       done
   fi
   # continue
   # change the number of games played by the user
-  UPDATE_RESULT=$($PSQL "UPDATE users SET games_played= games_played + 1 WHERE username='$username'")
+  UPDATE_RESULT=$($PSQL "UPDATE users SET games_played = games_played + 1 WHERE username='$username'")
   
   # start the game
   number_of_guesses=0
@@ -59,8 +59,16 @@ else
       number_of_guesses=$(( $number_of_guesses + 1 ))
   done
   # successful guess
-  echo -e "You guessed it in $number_of_guesses tries. The secret number was $secret_number. Nice job!"
 
-  # update the user row in the database.
+  # update the best game column
+  USER_CURRENT_BEST_SCORE=$($PSQL "SELECT best_game FROM users WHERE username='$username'")
+  if [[ $USER_CURRENT_BEST_SCORE -gt $number_of_guesses ]]
+  then
+        UPDATE_RESULT=$($PSQL "UPDATE users SET best_game = $number_of_guesses")
+  fi
+  # update the games_played column.
+  USER_GAMES_UPDATE=$($PSQL "UPDATE users SET games_played = games_played + 1")
+
+  echo -e "You guessed it in $number_of_guesses tries. The secret number was $secret_number. Nice job!"
  
 fi
