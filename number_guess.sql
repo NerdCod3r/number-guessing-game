@@ -50,8 +50,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.users (
     user_id integer NOT NULL,
     username character varying(22) NOT NULL,
-    total_games_played integer DEFAULT 0 NOT NULL,
-    best_score integer DEFAULT '-1'::integer NOT NULL
+    games_played integer DEFAULT 0 NOT NULL,
+    best_game integer DEFAULT '-1'::integer NOT NULL
 );
 
 
