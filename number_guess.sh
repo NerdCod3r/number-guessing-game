@@ -1,44 +1,27 @@
 #!/bin/bash
-PSQL="psql -X --username=freecodecamp --dbname=number_guess --no-align -t -c"
-secret_number=$(($RANDOM%1001))
-# echo "$secret_number"
+PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
+
+secret_number=$((RANDOM % 1001))
 
 echo -e "Enter your username:"
 read username
 
-# if the username is less or more than 22 characters
-if [[ ! $username =~ [A-Za-z0-9]{22}$ ]]
+CHECK_USER=$($PSQL "SELECT * FROM users WHERE username='$username'")
+
+if [[ -z $CHECK_USER ]]
 then
-    echo -e "usernames should be 22 characters."
+    echo -e "Welcome, $username! It looks like this is your first time here."
 else
-  # the username is 22 characters
-  CHECK_USER=$($PSQL "SELECT * FROM users WHERE username='$username'")
-  # if user does not exist
-  if [[ -z $CHECK_USER ]]
-  then
-      # insert the user
-      INSERT_USER_RESULT=$($PSQL "INSERT INTO users(username) VALUES('$username')")
-      if [[ $INSERT_USER_RESULT == 'INSERT 0 1' ]]
-      then
-          echo -e "Welcome, $username! It looks like this is your first time here."
-      fi
-  # if the user exists
-  else
-      # print some info to the user
-      echo "$CHECK_USER" | while IFS="|" read USER_ID username games_played best_game
-      do
-        echo "Welcome back, $username! You have played $games_played games, and your best game took $best_game guesses."
-      done
-  fi
-  # continue
-  # change the number of games played by the user
-  UPDATE_RESULT=$($PSQL "UPDATE users SET games_played = games_played + 1 WHERE username='$username'")
-  
-  # start the game
-  number_of_guesses=0
-  GUESSED_NUMBER=-90
-  while [[ $GUESSED_NUMBER != $secret_number ]]
-  do
+    echo "$CHECK_USER" | while IFS="|" read USER_ID username_query games_played best_game
+    do
+        echo -e "Welcome back, $username_query! You have played $games_played games, and your best game took $best_game guesses."
+    done
+fi
+
+number_of_guesses=0
+GUESSED_NUMBER=-90
+while [[ $GUESSED_NUMBER != $secret_number ]]
+do
       echo -e "Guess the secret number between 1 and 1000:"
       read GUESSED_NUMBER
 
@@ -57,18 +40,6 @@ else
           fi
       fi
       number_of_guesses=$(( $number_of_guesses + 1 ))
-  done
-  # successful guess
+done
 
-  # update the best game column
-  USER_CURRENT_BEST_SCORE=$($PSQL "SELECT best_game FROM users WHERE username='$username'")
-  if [[ $USER_CURRENT_BEST_SCORE -gt $number_of_guesses ]]
-  then
-        UPDATE_RESULT=$($PSQL "UPDATE users SET best_game = $number_of_guesses")
-  fi
-  # update the games_played column.
-  USER_GAMES_UPDATE=$($PSQL "UPDATE users SET games_played = games_played + 1")
-
-  echo -e "You guessed it in $number_of_guesses tries. The secret number was $secret_number. Nice job!"
- 
-fi
+echo -e "You guessed it in $number_of_guesses tries. The secret number was $secret_number. Nice job!"
