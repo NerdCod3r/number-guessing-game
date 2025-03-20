@@ -39,7 +39,7 @@ do
               echo -e "It's lower than that, guess again:"
           fi
       fi
-      number_of_guesses=$(( $number_of_guesses + 1 ))
+      number_of_guesses=$(( number_of_guesses + 1 ))
 done
 
 echo -e "You guessed it in $number_of_guesses tries. The secret number was $secret_number. Nice job!"
