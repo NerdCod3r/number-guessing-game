@@ -35,5 +35,36 @@ CREATE TABLE games (
   score INT NOT NULL
 );  
 ```
+## 🚀 Usage  
+### 1️⃣ Run the script
+```sh
+bash number_guess.sh
+```
+### 2️⃣ Enter a username:  
+• If you're a **new user** , it will greet you and register your name.  
+• If you're a returning user, it will display your past performance.  
 
+### 3️⃣ Guess the number!  
+• The script will generate a random number between **1** **and** **1000**.
+• Enter a number and follow the hints until you guess correctly.  
+### 4️⃣ Game completion!  
+• The program will congratulate you and save your game result in the database.  
+
+## 📜 Example Output
+```sh
+Enter your username:
+Alex
+
+Welcome back, Alex! You have played 5 games, and your best game took 3 guesses.
+
+Guess the secret number between 1 and 1000:  
+500  
+It's lower than that, try again:  
+250  
+It's higher than that, try again:  
+300  
+It's lower than that, try again:  
+275  
+You guessed it in 4 tries. Congratulations!  
+```
 
