@@ -61,9 +61,7 @@ ALTER TABLE public.games OWNER TO freecodecamp;
 
 CREATE TABLE public.users (
     user_id integer NOT NULL,
-    username character varying(22) NOT NULL,
-    games_played integer NOT NULL,
-    best_game integer NOT NULL
+    username character varying(22) NOT NULL
 );
 
 
@@ -111,7 +109,7 @@ INSERT INTO public.games VALUES (3, 2);
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
-INSERT INTO public.users VALUES (3, '123456789JojojoKellyto', 1, 14);
+INSERT INTO public.users VALUES (3, '123456789JojojoKellyto');
 
 
 --
