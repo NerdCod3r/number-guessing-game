@@ -1,45 +1,51 @@
 #!/bin/bash
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
-secret_number=$(($RANDOM % 1000 + 1))
+secret_number=$((RANDOM % 1000 + 1))
 
-echo -e "Enter your username:"
-read username
+GAME_SPLASH(){
+    echo -e "Enter your username:"
+    read username
 
-CHECK_USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$username'")
+    # get user id
+    USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$username'")
 
-if [[ -z $CHECK_USER_ID ]]
+    # if it's a new user
+    if [[ -z $USER_ID ]]
+    then
+        # add user
+         # insert the user
+        INSERT_USER_RESULT=$($PSQL "INSERT INTO users(username) VALUES('$username')")
+        if [[ $INSERT_USER_RESULT == 'INSERT 0 1' ]]
+        then
+            echo -e "Welcome, $username! It looks like this is your first time here."
+            # initialize games_played and best_game
+            games_played=0
+            best_game=0
+        fi
+    # it is an already existing user
+    else
+        # get all the info using the USER_ID
+INFO=$($PSQL "SELECT COUNT(user_id) AS games_played, COALESCE(MIN(score), 0) AS best_game, user_id, username FROM users LEFT JOIN games USING(user_id) WHERE user_id=$USER_ID GROUP BY user_id")
+
+# check if user has any games played
+if [[ -z $INFO ]]
 then
-    echo -e "Welcome, $username! It looks like this is your first time here."
+    games_played=0
+    best_game=0
+    echo -e "\nWelcome back, $USERNAME! You have played $games_played games, and your best game took $best_game guesses."
 else
-    games_played=$($PSQL "SELECT COUNT(score) FROM games WHERE user_id=$CHECK_USER_ID")
-    best_game=$($PSQL "SELECT MIN(score) FROM games WHERE user_id=$CHECK_USER_ID")
-
-   echo "Welcome back, $username! You have played $games_played games, and your best game took $best_game guesses."
+    while IFS="|" read GAMES_PLAYED BEST_GAME USER_ID USERNAME
+    do
+        games_played=$GAMES_PLAYED
+        best_game=$BEST_GAME
+        echo -e "\nWelcome back, $USERNAME! You have played $games_played games, and your best game took $best_game guesses."
+    done < <(echo "$INFO")
 fi
 
-number_of_guesses=0
-GUESSED_NUMBER=-90
-while [[ $GUESSED_NUMBER != $secret_number ]]
-do
-      echo -e "Guess the secret number between 1 and 1000:"
-      read GUESSED_NUMBER
+    fi
 
-      # if the input is not an integer
-      if [[ ! $GUESSED_NUMBER =~ ^[0-9]+$ ]]
-      then
-          echo -e "That is not an integer, guess again:"
-      else
-          # lower guess
-          if [[ $GUESSED_NUMBER -lt $secret_number ]]
-          then
-              echo -e "It's higher than that, guess again:"
-          elif [[ $GUESSED_NUMBER -gt $secret_number ]]
-          then
-              echo -e "It's lower than that, guess again:"
-          fi
-      fi
-      number_of_guesses=$(( number_of_guesses + 1 ))
-done
-
-echo -e "You guessed it in $number_of_guesses tries. The secret number was $secret_number. Nice job!"
+    echo -e "Guess the secret number between 1 and 1000:"
+    read g
+}
+GAME_SPLASH
