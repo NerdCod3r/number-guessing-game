@@ -53,9 +53,9 @@ bash number_guess.sh
 ## 📜 Example Output
 ```sh
 Enter your username:
-Alex
+SuperLongUsername_123
 
-Welcome back, Alex! You have played 5 games, and your best game took 3 guesses.
+Welcome back, SuperLongUsername_123! You have played 5 games, and your best game took 3 guesses.
 
 Guess the secret number between 1 and 1000:  
 500  
@@ -66,5 +66,18 @@ It's higher than that, try again:
 It's lower than that, try again:  
 275  
 You guessed it in 4 tries. Congratulations!  
-```
+```  
+## ⚙️ Troubleshooting  
+• If the script doesn't run, ensure it has executable permissions:
+```sh
+chmod +x number_guess.sh
+```  
+• Make sure PostgreSQL is running before executing the script.  
+• Usernames must be 22 characters or fewer.  
+## 🎯 Future Improvements  
+• Add a leaderboard system  
+• Implement difficulty levels  
+• Convert to a Python version with a GUI  
+## 📜 License
+This project is open-source and free to use.
 
