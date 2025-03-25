@@ -65,7 +65,7 @@ It's higher than that, try again:
 300  
 It's lower than that, try again:  
 275  
-You guessed it in 4 tries. Congratulations!  
+You guessed it in 4 tries. The secret number was 275. Nice job!  
 ```  
 ## ⚙️ Troubleshooting  
 • If the script doesn't run, ensure it has executable permissions:
@@ -73,7 +73,7 @@ You guessed it in 4 tries. Congratulations!
 chmod +x number_guess.sh
 ```  
 • Make sure PostgreSQL is running before executing the script.  
-• Usernames must be 22 characters or fewer.  
+• Usernames must be **22 characters or fewer**.  
 ## 🎯 Future Improvements  
 • Add a leaderboard system  
 • Implement difficulty levels  
